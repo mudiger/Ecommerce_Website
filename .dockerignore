@@ -1,0 +1,10 @@
+# Ignore Git and dependencies
+.git
+.gitignore
+node_modules
+venv
+__pycache__
+
+# Ignore local environment files
+.env
+.DS_Store
