@@ -30,14 +30,14 @@ jobs:
       - name: Build and tag Docker image
         run: |
           IMAGE_TAG=$(date +%Y%m%d%H%M%S)  # Generate timestamp-based tag
-          ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
+          ECR_URI=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
           docker build -t $ECR_URI:$IMAGE_TAG .
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
       - name: Push image to AWS ECR
         run: |
-          ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
+          ECR_URI=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
           docker push $ECR_URI:$IMAGE_TAG
 
       - name: Output Image URI
-        run: echo "Pushed Docker image: $AWS_ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:$IMAGE_TAG"
+        run: echo "Pushed Docker image: $ECR_URI:$IMAGE_TAG"
