@@ -1,23 +1,29 @@
-# Use a lightweight Node.js base image
-FROM node:18-alpine
+# Use a lightweight Node.js image
+FROM node:18-alpine AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json first (if available)
+# Copy package.json and package-lock.json first for better caching
 COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy all application files
 COPY . .
 
-# Build the Next.js app for production
+# Build the Vite app (NOT Next.js)
 RUN npm run build
 
-# Expose the port your application runs on
-EXPOSE 3000
+# Use Nginx to serve the Vite-built app
+FROM nginx:alpine AS production
 
-# Command to start the Next.js application
-CMD ["npm", "run", "start"]
+# Copy the Vite build output to the Nginx public directory
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Expose the port Nginx serves on
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
