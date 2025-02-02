@@ -1,31 +1,20 @@
-# Use official Node.js image (latest LTS recommended)
-FROM node:18-alpine AS builder
+# Use a lightweight Node.js base image
+FROM node:18-alpine
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /app
+
+# Copy package.json and package-lock.json first (if available)
+COPY package.json package-lock.json ./
 
 # Install dependencies
-COPY package.json package-lock.json ./
-RUN npm install --frozen-lockfile
+RUN npm install
 
-# Copy application files
+# Copy the rest of the application code
 COPY . .
 
-# Build the Next.js application
-RUN npm run build
+# Expose the port your application runs on
+EXPOSE 8080
 
-# Use a minimal runtime image for better performance
-FROM node:18-alpine AS runner
-WORKDIR /app
-
-# Copy only the necessary files from the builder stage
-COPY . .
-
-# Set environment variables for Next.js
-ENV NODE_ENV=production
-
-# Expose Next.js default port
-EXPOSE 3000
-
-# Run Next.js application
-CMD ["node", "node_modules/.bin/next", "start"]
+# Command to start the Next.js application
+CMD ["npm", "run", "start"]
