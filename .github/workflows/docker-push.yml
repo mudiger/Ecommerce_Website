@@ -36,7 +36,6 @@ jobs:
         run: |
           export ECR_URI=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
           docker build -t $ECR_URI:latest .
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
       - name: Push image to AWS ECR
         run: docker push ${{ env.ECR_URI }}:${{ env.IMAGE_TAG }}
