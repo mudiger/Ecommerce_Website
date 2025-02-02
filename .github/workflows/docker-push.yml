@@ -42,5 +42,5 @@ jobs:
       - name: Push image to AWS ECR
         run: docker push ${{ env.ECR_URI }}:${{ env.IMAGE_TAG }}
 
-      # - name: Output Image URI
-      #   run: echo "Pushed Docker image: ${{ env.ECR_URI }}:${{ env.IMAGE_TAG }}"
+      - name: Output Image URI
+        run: echo "Pushed Docker image:${{ env.ECR_URI }}:${{ env.IMAGE_TAG }}"
